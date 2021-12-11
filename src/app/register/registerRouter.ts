@@ -5,7 +5,7 @@ const userControler = require("../user/userControler");
 
 register.route('/register')
 .post(function(req, res) {
-    req.body.role = "pateint";
+    //req.body.role = "pateint";
     userControler.createUser(req, res);
 });
 
