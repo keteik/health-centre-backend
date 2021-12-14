@@ -14,7 +14,6 @@ const createUser = async (req: Request, res: Response) => {
     const doctorBody: { id, phone, specialty, age, gender} = req.body;
     const adminBody: { id, phone, specialty, age, gender} = req.body;
 
-    //userBody.role = "patient";
     try{
         userBody.password = await bcrypt.hash(req.body.password,10);
         const user = User.create( userBody );
