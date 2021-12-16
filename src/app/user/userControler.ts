@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Request, Response} from "express";
-
+import { getManager } from 'typeorm';
 import { User } from "../../entity/User";
 import { Patient } from "../../entity/Patient";
 import { Doctor } from "../../entity/Doctor";
@@ -15,6 +15,13 @@ const createUser = async (req: Request, res: Response) => {
     const adminBody: { id, phone, specialty, age, gender} = req.body;
 
     try{
+        const entityManager = getManager();
+
+        const userCheck =  await entityManager.findOne(User, {email: req.body.email});
+        if(userCheck !== undefined){
+            return  res.status(200).json( {"message": "User with that email already exists!"} );
+        }
+
         userBody.password = await bcrypt.hash(req.body.password,10);
         const user = User.create( userBody );
 
@@ -42,12 +49,13 @@ const createUser = async (req: Request, res: Response) => {
         }
         
         await user.save();
-        return res.status(201).json(user);
+        return res.status(201).json( {
+            "id": user.id
+        });
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
     };
-    
 }
 
 const getUsers = async (_: Request, res: Response) => {

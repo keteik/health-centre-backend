@@ -66,7 +66,12 @@ const auth = (req, res, next) => {
             if(err) {
                 return next(err);
             }
-            return res.json(user);
+            return res.json({
+                "id": user.id,
+                "name": user.name,
+                "surname": user.surname,
+                "role": user.role
+            });
         });
     })(req, res, next);
 }

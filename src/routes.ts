@@ -5,6 +5,7 @@ const patientRoute = require("./app/patient/patientRouter");
 const registerRouter = require("./app/register/registerRouter");
 const loginRouter = require("./auth/loginRouter");
 const loginControler = require("./auth/loginControler");
+const logoutRouter = require("./auth/logoutRouter");
 
 
 const initRoutes = (app: Express) => {
@@ -12,6 +13,7 @@ const initRoutes = (app: Express) => {
     app.use('/', patientRoute);
     app.use('/', loginRouter);
     app.use('/', registerRouter);
+    app.use('/', logoutRouter);
 
     app.get('/', loginControler.checkAuthenticated ,(req, res) => {
         res.json( {"message": "You are logged in!"} );
