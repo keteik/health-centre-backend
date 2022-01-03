@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany} from "typeorm";
+import { Visit } from "./Visit";
 
 @Entity("doctors")
 export class Doctor extends BaseEntity{
@@ -17,5 +18,8 @@ export class Doctor extends BaseEntity{
 
     @Column()
     gender: string;
+
+    @OneToMany(() => Visit, visit => visit.doctor)
+    visits: Visit[];
 
 }
