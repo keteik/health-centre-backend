@@ -8,5 +8,10 @@ user.route('/visits')
     visitControler.createVisit(req, res);
 })
 
+user.route('/visits/:id')
+.get(function(req, res) {
+    visitControler.getVisit(req, res);
+})
+
 
 module.exports = user;

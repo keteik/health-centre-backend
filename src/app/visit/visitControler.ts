@@ -18,8 +18,6 @@ const createVisit = async (req: Request, res: Response) => {
         return  res.status(200).json( {"message": "Doctor does not exists!"} );
     }
 
-    //const visitBody:{ id, date, room, status, patientId, doctorId } = req.body;
-
     const visit = new Visit();
     visit.date = req.body.date;
     visit.room = req.body.room;
@@ -29,8 +27,7 @@ const createVisit = async (req: Request, res: Response) => {
 
 
     try{
-       // const visit = Visit.create( visitBody );   
-       // await visit.save();
+      
        await entityManager.save(visit);
 
         return res.status(201).json( {
@@ -42,4 +39,27 @@ const createVisit = async (req: Request, res: Response) => {
     };
 }
 
-module.exports = { createVisit }
+const getVisit = async (req: Request, res: Response) => {
+
+    const id = req.params.id;
+
+
+    try{
+        const users = await Visit.find({ 
+            relations: ["patient", "doctor"],
+            where: {
+                patient: {
+                    id: id
+                }
+            }
+        });
+
+        return res.status(200).json(users);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: "Something went wrong"});
+    };
+    
+} 
+
+module.exports = { createVisit, getVisit }
