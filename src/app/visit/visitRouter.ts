@@ -1,17 +1,17 @@
 import { Router } from "express";
 
-const user = Router();
+const visit = Router();
 const visitControler = require("./visitControler")
 
-user.route('/visits')
+visit.route('/visits')
 .post(function(req, res) {
     visitControler.createVisit(req, res);
 })
 
-user.route('/visits/:id')
+visit.route('/visits/:id')
 .get(function(req, res) {
     visitControler.getVisit(req, res);
 })
 
 
-module.exports = user;
+module.exports = visit;

@@ -9,9 +9,9 @@ import { error } from "console";
 const bcrypt = require('bcrypt');
 
 const createUser = async (req: Request, res: Response) => {
-    const userBody:{ id, name, surname, email, password, role } = req.body;
-    const patientBody: { id, phone, pesel, age, gender} = req.body;
-    const doctorBody: { id, phone, specialty, age, gender} = req.body;
+    const userBody:{ id, email, password, role } = req.body;
+    const patientBody: { id, name, surname, phone, pesel, age, gender, user} = req.body;
+    const doctorBody: { id, name, surname, phone, specialty, age, gender, user} = req.body;
     const adminBody: { id, phone, specialty, age, gender} = req.body;
 
     try{
@@ -23,7 +23,8 @@ const createUser = async (req: Request, res: Response) => {
         }
 
         userBody.password = await bcrypt.hash(req.body.password,10);
-        const user = User.create( userBody );
+        const user =  User.create( userBody );
+        await user.save();
 
         switch(userBody.role){
             case "admin": {
@@ -33,14 +34,17 @@ const createUser = async (req: Request, res: Response) => {
             }
 
             case "patient": {
+                patientBody.user = user;
                 const patient = Patient.create( patientBody );
                 await patient.save();
+
                 break;
             }
-
             case "doctor": {
-                const doctor = Doctor.create( doctorBody );
+                doctorBody.user = user;
+                const doctor = Doctor.create( patientBody );
                 await doctor.save();
+
                 break;
             }
             default: {
@@ -48,7 +52,6 @@ const createUser = async (req: Request, res: Response) => {
             }
         }
         
-        await user.save();
         return res.status(201).json( {
             "id": user.id
         });

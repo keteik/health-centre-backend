@@ -45,16 +45,20 @@ const getVisit = async (req: Request, res: Response) => {
 
 
     try{
-        const users = await Visit.find({ 
-            relations: ["patient", "doctor"],
+        const visits = await Visit.find({ 
+            relations: ["doctor"],
             where: {
                 patient: {
                     id: id
+            
                 }
             }
         });
 
-        return res.status(200).json(users);
+        
+
+
+        return res.status(200).json(visits);
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
