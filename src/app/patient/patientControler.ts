@@ -16,4 +16,18 @@ const getPatients = async (_: Request, res: Response) => {
     
 }
 
-module.exports = { getPatients }
+const getPatient = async (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    try{
+        const patient = await Patient.findOne(id);
+
+        return res.status(200).json(patient);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: "Something went wrong"});
+    };
+    
+}
+
+module.exports = { getPatients, getPatient }

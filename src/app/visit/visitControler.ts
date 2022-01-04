@@ -50,14 +50,9 @@ const getVisit = async (req: Request, res: Response) => {
             where: {
                 patient: {
                     id: id
-            
                 }
             }
         });
-
-        
-
-
         return res.status(200).json(visits);
     }catch(err){
         console.log(err);

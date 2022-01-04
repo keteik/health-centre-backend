@@ -12,9 +12,10 @@ user.route('/users')
 })
 .put()
 
+
 user.route('/users/:id')
 .delete(function(req, res) {
     userControler.deleteUser(req, res);
-});
+})
 
 module.exports = user;

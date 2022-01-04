@@ -8,4 +8,9 @@ patient.route('/patients')
     patientControler.getPatients(req, res);
 })
 
+patient.route('/patients/:id')
+.get(function(req, res) {
+    patientControler.getPatient(req, res);
+})
+
 module.exports = patient;
