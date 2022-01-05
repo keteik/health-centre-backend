@@ -2,7 +2,7 @@ if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
-import { Express } from 'express';
+import { Express, Request } from 'express';
 import { User } from '../entity/User';
 import { Patient } from '../entity/Patient';
 import { getManager } from 'typeorm';
@@ -16,12 +16,12 @@ const initializePassport = require('./passport-config');
 const setupPassport = (app: Express) => {
 
     initializePassport(passport,
-        async email => {
+        async (email: string) => {
             const entityManager = getManager();
 
             return await entityManager.findOne(User, {email: email});
         },
-        async id => {
+        async (id: number) => {
             const entityManager = getManager();
 
             return await entityManager.findOne(User, {id: id});

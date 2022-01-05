@@ -9,10 +9,10 @@ import { error } from "console";
 const bcrypt = require('bcrypt');
 
 const createUser = async (req: Request, res: Response) => {
-    const userBody:{ id, email, password, role } = req.body;
-    const patientBody: { id, name, surname, phone, pesel, age, gender, user} = req.body;
-    const doctorBody: { id, name, surname, phone, specialty, age, gender, user} = req.body;
-    const adminBody: { id, phone, specialty, age, gender} = req.body;
+    const userBody:{ id: number, email: string, password: string, role: string } = req.body;
+    const patientBody: { id: number, name: string, surname: string, phone: number, pesel: number, age: number, gender: string, user: User} = req.body;
+    const doctorBody: { id: number, name: string, surname: string, phone: number, specialty: string, age: number, gender: string, user: User} = req.body;
+   // const adminBody: { id: number, phone: numb, age, gender} = req.body;
 
     try{
         const entityManager = getManager();
