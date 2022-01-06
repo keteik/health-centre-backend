@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Visit } from "../../entity/Visit";
-import { EntityManager, getManager } from 'typeorm';
+import { getManager } from 'typeorm';
 import { Patient } from "../../entity/Patient";
 import { Doctor } from "../../entity/Doctor";
 
@@ -38,6 +38,8 @@ const createVisit = async (req: Request, res: Response) => {
 
 const getVisit = async (req: Request, res: Response) => {
     const id: string = req.params.id;
+    type visitType = {id: number, date: string, room: number, status: number, doctor: Object}
+    var visitData: visitType[] =[];
 
     try{
         const visits = await Visit.find({ 
@@ -48,7 +50,19 @@ const getVisit = async (req: Request, res: Response) => {
                 }
             }
         });
-        return res.status(200).json(visits);
+        for(let i = 0; i < visits.length; i++) {
+            visitData.push({
+                id: visits[i].id,
+                date: new Date(visits[i].date).toLocaleString(),
+                room: visits[i].room,
+                status: visits[i].status,
+                doctor: {
+                    name: visits[i].doctor.name,
+                    surname: visits[i].doctor.surname
+                }
+            })
+        }
+        return res.status(200).json(visitData);
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
