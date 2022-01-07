@@ -13,4 +13,9 @@ patient.route('/patients/:id')
     patientControler.getPatient(req, res);
 })
 
+patient.route('/patients/doctor/:id')
+.get(function(req, res) {
+    patientControler.getDoctorPatients(req, res);
+})
+
 module.exports = patient;

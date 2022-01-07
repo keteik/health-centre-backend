@@ -10,8 +10,8 @@ const bcrypt = require('bcrypt');
 
 const createUser = async (req: Request, res: Response) => {
     const userBody:{ id: number, email: string, password: string, role: string } = req.body;
-    const patientBody: { id: number, name: string, surname: string, phone: number, pesel: number, age: number, gender: string, user: User} = req.body;
-    const doctorBody: { id: number, name: string, surname: string, phone: number, specialty: string, age: number, gender: string, user: User} = req.body;
+    const patientBody: { id: number, name: string, surname: string, phone: number, pesel: number, age: number, gender: string, user: User, userId: number} = req.body;
+    const doctorBody: { id: number, name: string, surname: string, phone: number, specialty: string, age: number, gender: string, user: User, userId: number} = req.body;
    // const adminBody: { id: number, phone: numb, age, gender} = req.body;
 
     try{
@@ -35,6 +35,7 @@ const createUser = async (req: Request, res: Response) => {
 
             case "patient": {
                 patientBody.user = user;
+                patientBody.userId = user.id;
                 const patient = Patient.create( patientBody );
                 await patient.save();
 
@@ -42,6 +43,7 @@ const createUser = async (req: Request, res: Response) => {
             }
             case "doctor": {
                 doctorBody.user = user;
+                doctorBody.userId = user.id;
                 const doctor = Doctor.create( patientBody );
                 await doctor.save();
 

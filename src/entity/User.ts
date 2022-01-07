@@ -1,4 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, CreateDateColumn, OneToOne, JoinColumn} from "typeorm";
+import { Doctor } from "./Doctor";
+import { Patient } from "./Patient";
 
 @Entity("users")
 export class User extends BaseEntity{
@@ -17,5 +19,4 @@ export class User extends BaseEntity{
 
     @CreateDateColumn()
     create_time: Date;
-
 }

@@ -8,9 +8,14 @@ visit.route('/visits')
     visitControler.createVisit(req, res);
 })
 
-visit.route('/visits/:id')
+visit.route('/visits/patient/:id')
 .get(function(req, res) {
-    visitControler.getVisit(req, res);
+    visitControler.getVisitPatient(req, res);
+})
+
+visit.route('/visits/doctor/:id')
+.get(function(req, res) {
+    visitControler.getVisitDoctor(req, res);
 })
 
 

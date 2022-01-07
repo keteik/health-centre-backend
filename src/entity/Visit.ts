@@ -26,4 +26,10 @@ export class Visit extends BaseEntity{
 
     @OneToMany(() => Prescription, prescription => prescription.visit)
     prescriptions: Prescription[];
+
+    @Column()
+    patientId: number;
+
+    @Column()
+    doctorId: number;
 }

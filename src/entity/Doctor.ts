@@ -33,4 +33,7 @@ export class Doctor extends BaseEntity{
     @JoinColumn()
     user: User
 
+    @Column()
+    userId: number;
+
 }
