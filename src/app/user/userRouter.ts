@@ -2,9 +2,10 @@ import { Router } from "express";
 
 const user = Router();
 const userControler = require("./userControler")
+const loginControler = require("../../auth/loginControler");
 
 user.route('/users')
-.get(function(req, res) {
+.get(loginControler.checkAuthenticated, function(req, res) {
     userControler.getUsers(req, res);
 })
 .post(function(req, res) {
