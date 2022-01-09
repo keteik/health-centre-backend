@@ -108,7 +108,7 @@ const getVisitPatient = async (req: Request, res: Response) => {
         });
         for(let i = 0; i < visits.length; i++) {
             visitData.push({
-                id: visits[i].id = i+1,
+                id: visits[i].id,
                 date: new Date(visits[i].date).toLocaleString(),
                 room: visits[i].room,
                 status: visits[i].status,
@@ -130,7 +130,7 @@ const getVisitDoctor = async (req: Request, res: Response) => {
     var userId: number = parseInt(req.params.id);
     var doctorId: number;
 
-    type visitType = {id: number, date: string, room: number, status: number, patient: Object}
+    type visitType = { id: number, visitNumber: number, date: string, room: number, status: number, patient: Object }
     var visitData: visitType[] =[];
 
     const entityManager = getManager();
@@ -150,9 +150,11 @@ const getVisitDoctor = async (req: Request, res: Response) => {
                 }
             }
         });
+
         for(let i = 0; i < visits.length; i++) {
             visitData.push({
-                id: visits[i].id = i+1,
+                id: visits[i].id,
+                visitNumber: i+1,
                 date: new Date(visits[i].date).toLocaleString(),
                 room: visits[i].room,
                 status: visits[i].status,
