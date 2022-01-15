@@ -16,4 +16,5 @@ prescription.route('/prescriptions/:id')
     prescriptionContoler.getPrescription(req, res);
 })
 
+
 module.exports = prescription;

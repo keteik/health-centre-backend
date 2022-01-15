@@ -1,6 +1,6 @@
 import e, { Request, Response } from "express";
 import { Visit } from "../../entity/Visit";
-import { getManager } from 'typeorm';
+import { Equal, getManager, Not } from 'typeorm';
 import { Patient } from "../../entity/Patient";
 import { Doctor } from "../../entity/Doctor";
 
@@ -10,16 +10,16 @@ const createVisit = async (req: Request, res: Response) => {
     const entityManager = getManager();
 
     if(visitBody.userId) {
-        const findDoctor =  await entityManager.findOne(Doctor, {
+        const findPatient =  await entityManager.findOne(Patient, {
             where: {
                 userId: visitBody.userId
             }
         });
-        if(findDoctor === undefined){
-            return  res.status(200).json( {"message": "Doctor does not exists!"} );
+        if(findPatient === undefined){
+            return  res.status(200).json( {"message": "Patient does not exists!"} );
         } else {
-            visitBody.doctorId = findDoctor.id;
-            visitBody.status = 1;
+            visitBody.patientId = findPatient.id;
+            visitBody.room = 0;
         }
 
     } else {
@@ -53,35 +53,6 @@ const createVisit = async (req: Request, res: Response) => {
     };
 }
 
-const createVisitFromDoctor = async (req: Request, res: Response) => {
-    const visitBody: { id: number, date: Date, room: number, status: number, userId: number, patientId: number, doctorId: number} = req.body;
-
-    const entityManager = getManager();
-
-    const findDoctor =  await entityManager.findOne(Doctor, {
-        where: {
-            userId: visitBody.userId
-        }
-    });
-    if(findDoctor === undefined){
-        return  res.status(200).json( {"message": "Doctor does not exists!"} );
-    } else {
-        visitBody.doctorId = findDoctor.id;
-    }
-
-    try{
-        const visit = Visit.create( visitBody );
-        await visit.save();
-
-        return res.status(201).json( {
-            "id": visit.id
-        });
-    }catch(err){
-        console.log(err);
-        return res.status(500).json({error: "Something went wrong"});
-    };
-}
-
 const getVisitPatient = async (req: Request, res: Response) => {
     const userId: number = parseInt(req.params.id);
     var patientId: number;
@@ -100,12 +71,13 @@ const getVisitPatient = async (req: Request, res: Response) => {
     try{
         const visits = await Visit.find({ 
             relations: ["doctor"],
-            where: {
-                patient: {
-                    id: patientId
-                }
+            where:{
+                patientId: patientId,
+                status: Equal(2)
             }
+       
         });
+
         for(let i = 0; i < visits.length; i++) {
             visitData.push({
                 id: visits[i].id,
@@ -145,9 +117,8 @@ const getVisitDoctor = async (req: Request, res: Response) => {
         const visits = await Visit.find({ 
             relations: ["patient"],
             where: {
-                doctor: {
-                    id: doctorId
-                }
+                doctorId: doctorId,
+                status: Equal(2)
             }
         });
 
@@ -172,4 +143,62 @@ const getVisitDoctor = async (req: Request, res: Response) => {
     
 }
 
-module.exports = { createVisit, getVisitPatient, getVisitDoctor, createVisitFromDoctor }
+const getUpcomingVisits = async (req: Request, res: Response) => {
+    var userId: number = parseInt(req.params.id);
+    var doctorId: number;
+
+    type visitType = { id: number, visitNumber: number, date: string, room: number, status: number, patient: Object }
+    var visitData: visitType[] =[];
+
+    const entityManager = getManager();
+    const findDoctor =  await entityManager.findOne(Doctor, {userId: userId} );
+    if(findDoctor === undefined){
+        return  res.status(200).json( {"message": "Patient does not exists!"} );
+    } else {
+       doctorId = findDoctor.id;
+    }
+
+    try{
+        const visits = await Visit.find({ 
+            relations: ["patient"],
+            where: {
+                doctorId: doctorId,
+                status: Equal(1)
+            }
+        });
+
+        for(let i = 0; i < visits.length; i++) {
+            visitData.push({
+                id: visits[i].id,
+                visitNumber: i+1,
+                date: new Date(visits[i].date).toLocaleString(),
+                room: visits[i].room,
+                status: visits[i].status,
+                patient: {
+                    name: visits[i].patient.name,
+                    surname: visits[i].patient.surname
+                }
+            })
+        }
+        return res.status(200).json(visitData);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: "Something went wrong"});
+    };
+    
+}
+
+const updateVisitFinished = async (req: Request, res: Response) => {
+    const id = req.body.id;
+    try{
+        const visits = await Visit.update({id: id}, {status: 2});
+
+        return res.status(200).json({message: "success"});
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: "Something went wrong"});
+    };
+    
+}
+
+module.exports = { createVisit, getVisitPatient, getVisitDoctor, getUpcomingVisits, updateVisitFinished }

@@ -60,7 +60,7 @@ const getPrescription = async (req: Request, res: Response) => {
                 id: prescriptions[i].id = i + 1,
                 name: prescriptions[i].name,
                 payment: prescriptions[i].payment,
-                create_time: new Date(prescriptions[i].create_time).toLocaleString()
+                create_time: new Date(prescriptions[i].create_time).toLocaleDateString()
             })
         }
         
