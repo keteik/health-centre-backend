@@ -8,6 +8,16 @@ patient.route('/patients')
     patientControler.getPatients(req, res);
 })
 
+patient.route('/patients')
+.put(function(req, res) {
+    patientControler.editPatient(req, res);
+})
+
+patient.route('/patients/:id')
+.delete(function(req, res) {
+    patientControler.deletePatient(req, res);
+})
+
 patient.route('/patients/:id')
 .get(function(req, res) {
     patientControler.getPatient(req, res);

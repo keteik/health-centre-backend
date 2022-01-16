@@ -9,6 +9,16 @@ doctor.route('/doctors')
 })
 
 doctor.route('/doctors')
+.put(function(req, res) {
+    doctorContorler.editDoctor(req, res);
+})
+
+doctor.route('/doctors/:id')
+.delete(function(req, res) {
+    doctorContorler.deleteDoctor(req, res);
+})
+
+doctor.route('/doctors')
 .post(function(req, res) {
     doctorContorler.getDoctorsBySpecialty(req, res);
 })

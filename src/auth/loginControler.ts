@@ -69,7 +69,10 @@ const auth = (req, res, next) => {
                 return next(err);
             }
 
-            let userInfo;
+            var userInfo: {name: string, surname: string} = {
+                name: "",
+                surname: ""
+            }
 
             try{
                 if(user.role === "patient") {
@@ -94,6 +97,10 @@ const auth = (req, res, next) => {
                         }
                     })
                     userInfo = doctor;
+                } else if(user.role === "admin") {
+                    userInfo.name = "admin";
+                    userInfo.surname = "";
+                    console.log(userInfo.name);
                 }
                 
         

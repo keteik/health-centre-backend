@@ -4,6 +4,7 @@ import { getManager } from "typeorm";
 import { Patient } from "../../entity/Patient";
 import { Visit } from "../../entity/Visit";
 import { Doctor } from "../../entity/Doctor";
+import { User } from "../../entity/User";
 
 const getPatients = async (_: Request, res: Response) => {
 
@@ -88,4 +89,50 @@ const getDoctorPatients = async (req: Request, res: Response) => {
     
 }
 
-module.exports = { getPatients, getPatient, getDoctorPatients }
+const editPatient = async (req: Request, res: Response) => {
+    const patientBody:{ id: number, name: string, surname: string, age: number, gender: string, pesel: number, phone: number} = req.body;
+    
+    try{
+    const patient = await Patient.update({id: patientBody.id}, patientBody);
+        if(patient){
+            return res.status(200).json({message: "success"});
+        } else {
+            return res.status(500).json({error: "Nie ma takeigo pacjenta"});
+        }
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: "Something went wrong"});
+    };
+    
+}
+
+const deletePatient = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const entityManager = getManager();
+
+    try{
+
+        const patient =  await entityManager.findOne(Patient, {
+            where: {
+                id: id
+            }
+        });
+
+        const user =  await entityManager.findOne(User, {
+            where: {
+                id: patient.userId
+            }
+        });
+
+        await patient.remove();
+        await user.remove();
+
+        return res.status(200).json({message: "User deleted successfull", status: "0"});
+
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: "Something went wrong"});
+    }
+}
+
+module.exports = { getPatients, getPatient, getDoctorPatients, editPatient, deletePatient }
