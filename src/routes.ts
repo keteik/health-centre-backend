@@ -3,9 +3,9 @@ import { Express } from 'express';
 const userRoute = require("./app/user/userRouter");
 const patientRoute = require("./app/patient/patientRouter");
 const registerRouter = require("./app/register/registerRouter");
-const loginRouter = require("./auth/loginRouter");
 const loginControler = require("./auth/loginControler");
-const logoutRouter = require("./auth/logoutRouter");
+const authRouter = require("./auth/authRouter");
+const auth = require("./auth/authRouter");
 const visitRouter = require("./app/visit/visitRouter")
 const doctorRouter = require("./app/doctor/doctorRouter")
 const prescriptionRouter = require("./app/prescription/prescriptionRouter");
@@ -14,9 +14,8 @@ const prescriptionRouter = require("./app/prescription/prescriptionRouter");
 const initRoutes = (app: Express) => {
     app.use('/', userRoute);
     app.use('/', patientRoute);
-    app.use('/', loginRouter);
     app.use('/', registerRouter);
-    app.use('/', logoutRouter);
+    app.use('/', auth);
     app.use('/', visitRouter)
     app.use('/', doctorRouter);
     app.use('/', prescriptionRouter);
