@@ -10,9 +10,8 @@ const bcrypt = require('bcrypt');
 
 const createUser = async (req: Request, res: Response) => {
     const userBody:{ id: number, email: string, password: string, role: string } = req.body;
-    const patientBody: { id: number, name: string, surname: string, phone: number, pesel: number, age: number, gender: string, user: User, userId: number} = req.body;
-    const doctorBody: { id: number, name: string, surname: string, phone: number, specialty: string, age: number, gender: string, user: User, userId: number} = req.body;
-   // const adminBody: { id: number, phone: numb, age, gender} = req.body;
+    const patientBody: { id: number, name: string, surname: string, phone: number, pesel: number, age: number, gender: string, user: User, userId: number } = req.body;
+    const doctorBody: { id: number, name: string, surname: string, phone: number, specialty: string, age: number, gender: string, user: User, userId: number } = req.body;
 
     try{
         const entityManager = getManager();
@@ -27,12 +26,6 @@ const createUser = async (req: Request, res: Response) => {
         await user.save();
 
         switch(userBody.role){
-            case "admin": {
-
-                break;
-                
-            }
-
             case "patient": {
                 patientBody.user = user;
                 patientBody.userId = user.id;
@@ -75,28 +68,6 @@ const getUsers = async (_: Request, res: Response) => {
     };
     
 }
-
-/*const updateUser = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    const  patient_body:{ name, surname, email, password, role } = req.body;
- 
-    try{
-
-        const user = await User.findOneOrFail(id);
-        user.name = username || user.username;
-        user.password = password || user.username;
-        user.email = email || user.email;
-        user.role = role || user.role;
-
-        await user.save();
-
-        return res.json(user)
-
-    }catch(err){
-        console.log(err);
-        return res.status(500).json({error: "Something went wrong"});
-    }
-}*/
 
 const deleteUser = async (req: Request, res: Response) => {
     const id = req.params.id;

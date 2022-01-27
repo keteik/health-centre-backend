@@ -15,8 +15,7 @@ const getPatients = async (_: Request, res: Response) => {
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
-    };
-    
+    };  
 }
 
 const getPatient = async (req: Request, res: Response) => {
@@ -30,7 +29,6 @@ const getPatient = async (req: Request, res: Response) => {
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
     };
-    
 }
 
 const getDoctorPatients = async (req: Request, res: Response) => {

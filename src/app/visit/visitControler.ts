@@ -188,12 +188,12 @@ const getUpcomingVisits = async (req: Request, res: Response) => {
     
 }
 
-const updateVisitFinished = async (req: Request, res: Response) => {
+const confirmVisit = async (req: Request, res: Response) => {
     const id = req.body.id;
     try{
-        const visits = await Visit.update({id: id}, {status: 2});
+        const visits = await Visit.update({id: id}, {status: 1});
 
-        return res.status(200).json({message: "success"});
+        return res.status(200).json({message: "Wizyta potwierdzona !", status: "0"});
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
@@ -201,4 +201,40 @@ const updateVisitFinished = async (req: Request, res: Response) => {
     
 }
 
-module.exports = { createVisit, getVisitPatient, getVisitDoctor, getUpcomingVisits, updateVisitFinished }
+const getCompletedVisits = async (_: Request, res: Response) => {
+
+    try{
+        const visits =  await Visit.find({
+            where: {
+                status: 2
+            },
+            relations: ["doctor", "patient"]
+          
+        });
+
+        return res.status(200).json(visits);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: "Something went wrong"});
+    };  
+}
+
+const getUnconfirmedVisits = async (_: Request, res: Response) => {
+
+    try{
+        const visits =  await Visit.find({
+            where: {
+                status: 0
+            },
+            relations: ["doctor", "patient"]
+          
+        });
+
+        return res.status(200).json(visits);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: "Something went wrong"});
+    };  
+}
+
+module.exports = { createVisit, getVisitPatient, getVisitDoctor, getUpcomingVisits, confirmVisit, getCompletedVisits, getUnconfirmedVisits }
