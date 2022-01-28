@@ -53,7 +53,7 @@ const createVisit = async (req: Request, res: Response) => {
     };
 }
 
-const getVisitPatient = async (req: Request, res: Response) => {
+const getPatientVisits = async (req: Request, res: Response) => {
     const userId: number = parseInt(req.params.id);
     var patientId: number;
 
@@ -75,7 +75,6 @@ const getVisitPatient = async (req: Request, res: Response) => {
                 patientId: patientId,
                 status: Equal(2)
             }
-       
         });
 
         for(let i = 0; i < visits.length; i++) {
@@ -95,10 +94,9 @@ const getVisitPatient = async (req: Request, res: Response) => {
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
     };
-    
 }
 
-const getVisitDoctor = async (req: Request, res: Response) => {
+const getDoctorVisits = async (req: Request, res: Response) => {
     var userId: number = parseInt(req.params.id);
     var doctorId: number;
 
@@ -190,28 +188,35 @@ const getUpcomingVisits = async (req: Request, res: Response) => {
 
 const confirmVisit = async (req: Request, res: Response) => {
     const id = req.body.id;
-    try{
-        const visits = await Visit.update({id: id}, {status: 1});
+    const room = req.body.room;
+    var status: number = 0;
 
-        return res.status(200).json({message: "Wizyta potwierdzona !", status: "0"});
+    try{
+        
+        if(room) {
+            const visits = await Visit.update({id: id}, {status: 1, room: room});
+            status = 1;
+        } else {
+            const visits = await Visit.update({id: id}, {status: 2});
+            status = 2;
+        }
+        return res.status(200).json({message: "Wizyta potwierdzona !", status: status});
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
-    };
-    
+    }; 
 }
 
-const getCompletedVisits = async (_: Request, res: Response) => {
 
+
+const getCompletedVisits = async (_: Request, res: Response) => {
     try{
         const visits =  await Visit.find({
             where: {
                 status: 2
             },
             relations: ["doctor", "patient"]
-          
         });
-
         return res.status(200).json(visits);
     }catch(err){
         console.log(err);
@@ -220,16 +225,13 @@ const getCompletedVisits = async (_: Request, res: Response) => {
 }
 
 const getUnconfirmedVisits = async (_: Request, res: Response) => {
-
     try{
         const visits =  await Visit.find({
             where: {
                 status: 0
             },
             relations: ["doctor", "patient"]
-          
         });
-
         return res.status(200).json(visits);
     }catch(err){
         console.log(err);
@@ -237,4 +239,4 @@ const getUnconfirmedVisits = async (_: Request, res: Response) => {
     };  
 }
 
-module.exports = { createVisit, getVisitPatient, getVisitDoctor, getUpcomingVisits, confirmVisit, getCompletedVisits, getUnconfirmedVisits }
+module.exports = { createVisit, getPatientVisits, getDoctorVisits, getUpcomingVisits, confirmVisit, getCompletedVisits, getUnconfirmedVisits }

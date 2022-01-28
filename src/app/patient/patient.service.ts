@@ -7,7 +7,6 @@ import { Doctor } from "../../entity/Doctor";
 import { User } from "../../entity/User";
 
 const getPatients = async (_: Request, res: Response) => {
-
     try{
         const patients = await Patient.find();
 
@@ -31,13 +30,13 @@ const getPatient = async (req: Request, res: Response) => {
     };
 }
 
-const getDoctorPatients = async (req: Request, res: Response) => {
+const getPatientsAssignedToDoctor = async (req: Request, res: Response) => {
     const userId: number = parseInt(req.params.id);
     var doctorId: number;
 
-    type doctorPatientsType = {id: number, name: string, surname: string, age: number, gender: string}
-    var doctorPatients: doctorPatientsType[] =[];
-    var doctorPatientsSet = new Set<string>();
+    type Patients = {id: number, name: string, surname: string, age: number, gender: string}
+    var patients: Patients[] =[];
+    var patientsSet = new Set<string>();
 
     const entityManager = getManager();
 
@@ -46,9 +45,8 @@ const getDoctorPatients = async (req: Request, res: Response) => {
         if(findDoctor === undefined){
             return  res.status(200).json( {"message": "Doctor does not exists!"} );
         } else {
-        doctorId = findDoctor.id;
+            doctorId = findDoctor.id;
         }
-
 
         const findDoctorVisits =  await entityManager.find(Visit, {
             relations: ["patient", "doctor"],
@@ -63,7 +61,7 @@ const getDoctorPatients = async (req: Request, res: Response) => {
             return  res.status(200).json( {"message": "Patient does not exists!"} );
         } else {
             for(let i = 0; i < findDoctorVisits.length; i++) {
-                doctorPatientsSet.add(JSON.stringify({
+                patientsSet.add(JSON.stringify({
                     name: findDoctorVisits[i].patient.name,
                     surname: findDoctorVisits[i].patient.surname,
                     age: findDoctorVisits[i].patient.age,
@@ -72,26 +70,24 @@ const getDoctorPatients = async (req: Request, res: Response) => {
             }
 
             var i: number = 0;
-            doctorPatientsSet.forEach(function(val) {
-                doctorPatients.push(JSON.parse(val));
-                doctorPatients[i].id = i+1;
+            patientsSet.forEach(function(val) {
+                patients.push(JSON.parse(val));
+                patients[i].id = i+1;
                 i++;
             })
         }
-
-        return res.status(200).json(doctorPatients);
+        return res.status(200).json(patients);
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
     };
-    
 }
 
 const editPatient = async (req: Request, res: Response) => {
-    const patientBody:{ id: number, name: string, surname: string, age: number, gender: string, pesel: number, phone: number} = req.body;
+    const patientBody: Patient = req.body;
     
     try{
-    const patient = await Patient.update({id: patientBody.id}, patientBody);
+        const patient = await Patient.update({id: patientBody.id}, patientBody);
         if(patient){
             return res.status(200).json({message: "success"});
         } else {
@@ -101,7 +97,6 @@ const editPatient = async (req: Request, res: Response) => {
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
     };
-    
 }
 
 const deletePatient = async (req: Request, res: Response) => {
@@ -109,7 +104,6 @@ const deletePatient = async (req: Request, res: Response) => {
     const entityManager = getManager();
 
     try{
-
         const patient =  await entityManager.findOne(Patient, {
             where: {
                 id: id
@@ -133,4 +127,4 @@ const deletePatient = async (req: Request, res: Response) => {
     }
 }
 
-module.exports = { getPatients, getPatient, getDoctorPatients, editPatient, deletePatient }
+module.exports = { getPatients, getPatient, getPatientsAssignedToDoctor, editPatient, deletePatient }

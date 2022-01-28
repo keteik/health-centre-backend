@@ -8,10 +8,29 @@ import { error } from "console";
 
 const bcrypt = require('bcrypt');
 
+type UserType =  { 
+    id: number,
+    email: string,
+    password: string, 
+    role: string 
+}
+
+type PatientDoctorType =  { 
+    id: number, 
+    name: string, 
+    surname: string, 
+    phone: number, 
+    pesel: number, 
+    specialty: string, 
+    age: number, 
+    gender: string, 
+    user: User, 
+    userId: number 
+}
+
 const createUser = async (req: Request, res: Response) => {
-    const userBody:{ id: number, email: string, password: string, role: string } = req.body;
-    const patientBody: { id: number, name: string, surname: string, phone: number, pesel: number, age: number, gender: string, user: User, userId: number } = req.body;
-    const doctorBody: { id: number, name: string, surname: string, phone: number, specialty: string, age: number, gender: string, user: User, userId: number } = req.body;
+    const userBody: UserType = req.body;
+    const patientDoctorBody: PatientDoctorType = req.body;
 
     try{
         const entityManager = getManager();
@@ -25,19 +44,21 @@ const createUser = async (req: Request, res: Response) => {
         const user =  User.create( userBody );
         await user.save();
 
+        patientDoctorBody.user = user;
+        patientDoctorBody.userId = user.id;
+
         switch(userBody.role){
+            case "admin": {
+                break; 
+            }
             case "patient": {
-                patientBody.user = user;
-                patientBody.userId = user.id;
-                const patient = Patient.create( patientBody );
+                const patient = Patient.create( patientDoctorBody );
                 await patient.save();
 
                 break;
             }
             case "doctor": {
-                doctorBody.user = user;
-                doctorBody.userId = user.id;
-                const doctor = Doctor.create( patientBody );
+                const doctor = Doctor.create( patientDoctorBody );
                 await doctor.save();
 
                 break;
@@ -51,13 +72,11 @@ const createUser = async (req: Request, res: Response) => {
             "id": user.id
         });
     }catch(err){
-        console.log(err);
         return res.status(500).json({error: "Something went wrong"});
     };
 }
 
 const getUsers = async (_: Request, res: Response) => {
-
     try{
         const users = await User.find();
 
@@ -65,15 +84,13 @@ const getUsers = async (_: Request, res: Response) => {
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
-    };
-    
+    }; 
 }
 
 const deleteUser = async (req: Request, res: Response) => {
     const id = req.params.id;
 
     try{
-
         const user = await User.findOneOrFail(id);
         const patient = await Patient.findOneOrFail(id);
         
@@ -88,4 +105,4 @@ const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
-module.exports = { createUser, getUsers, /*updateUser,*/ deleteUser }
+module.exports = { createUser, getUsers, deleteUser }

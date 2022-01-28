@@ -1,11 +1,11 @@
 import { Router } from "express";
 
 const register = Router();
-const userControler = require("../user/userControler");
+const userService = require("../user/user.service");
 
 register.route('/register')
 .post(function(req, res) {
-    userControler.createUser(req, res);
+    userService.createUser(req, res);
 });
 
 module.exports = register;

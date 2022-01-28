@@ -1,12 +1,10 @@
 import "reflect-metadata";
 import {Request, Response} from "express";
-
 import { Doctor } from "../../entity/Doctor";
 import { getManager } from "typeorm";
 import { User } from "../../entity/User";
 
 const getDoctors = async (_: Request, res: Response) => {
-
     try{
         const doctors = await Doctor.find();
 
@@ -19,15 +17,14 @@ const getDoctors = async (_: Request, res: Response) => {
 }
 
 const getDoctorsBySpecialty = async (req: Request, res: Response) => {
-
     const specialty = req.body.specialty;
+
     try{
         const doctors = await Doctor.find({
             where: {
                 specialty: specialty
             }
         });
-
         return res.status(200).json(doctors);
     }catch(err){
         console.log(err);
@@ -37,15 +34,14 @@ const getDoctorsBySpecialty = async (req: Request, res: Response) => {
 }
 
 const getDoctor = async (req: Request, res: Response) => {
-
     const id = req.params.id;
+
     try{
         const users = await Doctor.find({
             where: {
                 id: id
             }
         });
-
         return res.status(200).json(users);
     }catch(err){
         console.log(err);
@@ -76,13 +72,11 @@ const getSpecialties = async (req: Request, res: Response) => {
                 i++;
             })
         }
-
         return res.status(200).json(specialtiesData);
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
     };
-    
 }
 
 const editDoctor = async (req: Request, res: Response) => {
@@ -99,7 +93,6 @@ const editDoctor = async (req: Request, res: Response) => {
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
     };
-    
 }
 
 const deleteDoctor = async (req: Request, res: Response) => {
@@ -107,15 +100,11 @@ const deleteDoctor = async (req: Request, res: Response) => {
     const entityManager = getManager();
     
     try{
-
         const doctor =  await entityManager.findOne(Doctor, {
             where: {
                 id: id
             }
         });
-
-        //const userId: { userId: number } = doctor;
-       // console.log(userId);
 
         const user =  await entityManager.findOne(User, {
             where: {
@@ -127,7 +116,6 @@ const deleteDoctor = async (req: Request, res: Response) => {
         await user.remove();
 
         return res.status(200).json({message: "User deleted successfull", status: "0"});
-
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});

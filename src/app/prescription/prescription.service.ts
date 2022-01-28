@@ -6,7 +6,6 @@ import { getManager } from "typeorm";
 
 const createPrescription = async (req: Request, res: Response) => {
     const prescriptionBody: {name: string, payment: number, visit: Visit}  = req.body;
-
     const entityManager = getManager();
 
     const findVisit = await entityManager.findOne(Visit, {id: req.body.visitId});
@@ -29,7 +28,6 @@ const createPrescription = async (req: Request, res: Response) => {
 }
 
 const getPrescriptions = async (_: Request, res: Response) => {
-
     try{
         const prescriptions = await Prescription.find();
 
@@ -63,13 +61,11 @@ const getPrescription = async (req: Request, res: Response) => {
                 create_time: new Date(prescriptions[i].create_time).toLocaleDateString()
             })
         }
-        
         return res.status(200).json(prescriptionData);
     }catch(err){
         console.log(err);
         return res.status(500).json({error: "Something went wrong"});
     };
-    
 } 
 
 module.exports = { createPrescription, getPrescriptions, getPrescription }

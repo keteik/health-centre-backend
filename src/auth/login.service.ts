@@ -14,7 +14,6 @@ const passport = require('passport');
 const initializePassport = require('./passport-config');
 
 const setupPassport = (app: Express) => {
-
     initializePassport(passport,
         async (email: string) => {
             const entityManager = getManager();
@@ -37,7 +36,6 @@ const setupPassport = (app: Express) => {
     app.use(passport.initialize());
     app.use(passport.session());
     app.use(express.json());
-
 }
 
 const checkAuthenticated = (req, res, next) => {
@@ -55,7 +53,7 @@ const checkNotAuthenticated = (req, res, next) => {
     return next();
 }
 
-const auth = (req, res, next) => {
+const authUser = (req, res, next) => {
     passport.authenticate('local', function(err, user, info) {
         if(err) {
             return next(err);
@@ -103,7 +101,6 @@ const auth = (req, res, next) => {
                     console.log(userInfo.name);
                 }
                 
-        
             }catch(err){
                 console.log(err);
             };
@@ -117,4 +114,4 @@ const auth = (req, res, next) => {
         });
     })(req, res, next);
 }
-module.exports = { setupPassport, checkAuthenticated, checkNotAuthenticated, auth };
+module.exports = { setupPassport, checkAuthenticated, checkNotAuthenticated, authUser };
