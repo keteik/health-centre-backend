@@ -1,26 +1,27 @@
 import { Router } from "express";
 
 const patient = Router();
-const patientService = require("./patient.service")
+const patientService = require("./patient.service");
+const userService = require("../user/user.service");
 
 patient.route('/patients')
 .get(function(req, res) {
     patientService.getPatients(req, res);
 })
-
-patient.route('/patients')
 .put(function(req, res) {
     patientService.editPatient(req, res);
 })
+.post(function(req, res) {
+    userService.createUser(req, res);
+});
 
-patient.route('/patients/:id')
-.delete(function(req, res) {
-    patientService.deletePatient(req, res);
-})
 
 patient.route('/patients/:id')
 .get(function(req, res) {
     patientService.getPatient(req, res);
+})
+.delete(function(req, res) {
+    patientService.deletePatient(req, res);
 })
 
 patient.route('/patients/doctor/:id')

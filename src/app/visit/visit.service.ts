@@ -79,7 +79,7 @@ const getPatientVisits = async (req: Request, res: Response) => {
 
         for(let i = 0; i < visits.length; i++) {
             visitData.push({
-                id: visits[i].id,
+                id: visits[i].id = (i + 1),
                 date: new Date(visits[i].date).toLocaleString(),
                 room: visits[i].room,
                 status: visits[i].status,
@@ -162,6 +162,9 @@ const getUpcomingVisits = async (req: Request, res: Response) => {
             where: {
                 doctorId: doctorId,
                 status: Equal(1)
+            },
+            order: {
+                date: "ASC"
             }
         });
 
