@@ -42,7 +42,7 @@ const checkAuthenticated = (req, res, next) => {
     if(req.isAuthenticated()){
         return next();
     }
-    return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"});
+    return res.status(400).json({"statusCode" : 400, "message" : "Not authenticated!"});
 }
 
 

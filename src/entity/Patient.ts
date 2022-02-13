@@ -18,7 +18,7 @@ export class Patient extends BaseEntity{
     phone: number;
 
     @Column()
-    pesel: number;
+    pesel: string;
 
     @Column()
     age: number;

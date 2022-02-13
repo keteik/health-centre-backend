@@ -20,7 +20,7 @@ const initRoutes = (app: Express) => {
     app.use('/', prescription);
 
     app.get('/', loginService.checkAuthenticated ,(req, res) => {
-        res.json( {"message": "You are logged in!"} );
+        res.json( {"message": "Jesteś już zalogowany!"} );
     });
 }
 

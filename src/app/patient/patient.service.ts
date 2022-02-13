@@ -8,7 +8,11 @@ import { User } from "../../entity/User";
 
 const getPatients = async (_: Request, res: Response) => {
     try{
-        const patients = await Patient.find();
+        const patients = await Patient.find({
+            order: {
+                surname: "ASC"
+            }
+        });
 
         return res.status(200).json(patients);
     }catch(err){

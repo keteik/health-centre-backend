@@ -6,6 +6,7 @@
    "password": "admin",
    "database": "health_centre",
    "synchronize": true,
+   "supportBigNumbers" : true,
    "logging": true,
    "entities": [
       "src/entity/**/*.ts"

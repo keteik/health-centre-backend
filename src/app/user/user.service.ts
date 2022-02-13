@@ -20,7 +20,7 @@ type PatientDoctorType =  {
     name: string, 
     surname: string, 
     phone: number, 
-    pesel: number, 
+    pesel: string, 
     specialty: string, 
     age: number, 
     gender: string, 

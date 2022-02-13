@@ -55,7 +55,12 @@ const getSpecialties = async (req: Request, res: Response) => {
     var specialtiesSet = new Set<string>();
 
     try{
-        const specialties = await Doctor.find({ select: ["specialty"] });
+        const specialties = await Doctor.find({ 
+            select: ["specialty"],
+            order: {
+                specialty: "ASC"
+            }
+        });
 
         if(specialties === undefined){
             return  res.status(200).json( {"message": "No specialities"} );

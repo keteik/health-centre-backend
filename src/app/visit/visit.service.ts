@@ -220,6 +220,13 @@ const getCompletedVisits = async (_: Request, res: Response) => {
             },
             relations: ["doctor", "patient"]
         });
+
+        var i: number = 1;
+        for(var index in visits) {
+            visits[index].id = i;
+            i++;
+        }
+
         return res.status(200).json(visits);
     }catch(err){
         console.log(err);

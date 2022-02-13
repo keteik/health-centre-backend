@@ -3,9 +3,10 @@ import { Router } from "express";
 const doctor = Router();
 const doctorService = require("./doctor.service");
 const userService = require("../user/user.service");
+const loginService = require("../../auth/login.service");
 
 doctor.route('/doctors')
-.get(function(req, res) {
+.get(loginService.checkAuthenticated, function(req, res) {
     doctorService.getDoctors(req, res);
 })
 .put(function(req, res) {
@@ -32,9 +33,5 @@ doctor.route('/doctors/:id')
 .delete(function(req, res) {
     doctorService.deleteDoctor(req, res);
 })
-
-
-
-
 
 module.exports = doctor;
